@@ -31,7 +31,7 @@ const config = {
   },
   output: {
     path: path.resolve(__dirname, 'src'),
-    filename: 'bundle.js'
+    filename: 'index.js'
   }
 };
 

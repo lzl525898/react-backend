@@ -1,5 +1,9 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
+
+import EntryContainer from './containers/entry';
+
+import 'antd/dist/antd.css';
 
 export default class Root extends Component {
   componentWillMount(){
@@ -7,7 +11,7 @@ export default class Root extends Component {
   };
   render(){
     return(
-      <div>123123</div>
+      <EntryContainer height={"100%"}/>
     )
   }
 }
