@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
+import BackHeader from './back-header';
+import BackAvatar from './back-avatar';
 
 const defaultProps = {
   headerHeight : "50px",
   headerPadding : 0,
-  headerBackground : "#fff",
+  headerBackground : "#36A6E0",
   contentMinWidth : 640,
   contentMinHeight : 360,
   contentBackground : '#fff',
@@ -16,9 +18,14 @@ export default class BackStage extends Component {
   constructor(props){
     super(props);
     this.state = {
-      collapsed: false
+      collapsed: false,
+      userName: JSON.parse(localStorage.userInfo).userName,
+      userType: JSON.parse(localStorage.userInfo).userType,
+      userAvatar: JSON.parse(localStorage.userInfo).userAvatar,
+      passWord: JSON.parse(localStorage.userInfo).userPassword
     };
   };
+
   render(){
     return(
       <Layout style={{ height:"100%" }}>
@@ -27,11 +34,14 @@ export default class BackStage extends Component {
           collapsedWidth="0"
           onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
         >
+          <BackAvatar userNick={ this.state.userName } userType={ this.state.userType } userAvatar={ this.state.userAvatar }/>
         </Sider>
         <Layout>
           <Header style={{ background:this.props.headerBackground,
                            padding:this.props.headerPadding ,
-                           height:this.props.headerHeight}} />
+                           height:this.props.headerHeight}} >
+              <BackHeader {...this.props} userNick={ this.state.userName } userAvatar= { this.state.userAvatar }/>
+          </Header>
           <Content style={{ margin: '24px 16px 0' }}>
             <div style={{
               padding:this.props.contentPadding, background:this.props.contentBackground,
@@ -40,7 +50,7 @@ export default class BackStage extends Component {
               content
             </div>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>
+          <Footer style={{ textAlign: 'center', color: '#cccccc' }}>
             React Backend ©2017 Created by Liangzelei
           </Footer>
         </Layout>

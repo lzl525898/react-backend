@@ -7,9 +7,12 @@ import {
   Link,
   Redirect,
   withRouter
-} from 'react-router-dom'
+} from 'react-router-dom';
+import createHistory from 'history/createBrowserHistory';
 import BackStage from '../components/back-stage';
 import BackLogin from '../components/back-login';
+
+const history = createHistory();
 
 const defaultProps = {
     height : "100%",
@@ -19,29 +22,20 @@ const defaultProps = {
 export default class Entry extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      userId: 0,
-      userName: "",
-      isLogin: false
-    };
   };
   componentWillMount(){
-    if (localStorage.userId) {
-      this.setState({
-        userId: localStorage.userId,
-        userName: localStorage.userName,
-        isLogin: true
-      });
+    if (localStorage.userInfo) {
+      history.push('/stage');
+    } else {
+      history.push('/login');
     }
-  };
-  checkUserLogin(){
-
   };
   render(){
     return(
-      <Router>
+      <Router history={ history }>
         <div style={{ height:this.props.height, backgroundColor:this.props.background }}>
-            <Route exact path="/" component={ BackLogin }/>
+            <Route exact path="/" render={()=>(<div>React</div>)}/>
+            <Route path="/login" component={ BackLogin }/>
             <Route path="/stage" component={ BackStage }/>
         </div>
       </Router>

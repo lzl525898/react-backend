@@ -5,7 +5,7 @@ import {
   Link,
   Redirect,
   withRouter
-} from 'react-router-dom'
+} from 'react-router-dom';
 import { Layout, Form, Icon, Input, Button, Checkbox} from 'antd';
 const { Header, Footer, Content } = Layout;
 const FormItem = Form.Item;
@@ -14,36 +14,60 @@ class BackLogin extends Component {
   constructor(props){
     super(props);
   };
+  // 登录成功跳转至后台
+  loginBackend(password=''){
+    var userInfo = {
+      userId: 0,
+      userName: 'admin',
+      userType: '管理员',
+      userAvatar: './src/images/admin-avatar.png',
+      userPassword:password,
+    };
+    localStorage.userInfo = JSON.stringify(userInfo);
+    console.log(JSON.stringify(userInfo));
+    const { from } = this.props.location.state || { from: { pathname: '/stage' } }
+    this.props.history.push(from.pathname);
+  };
   // 提交登录表单
   handleSubmit(event){
     event.preventDefault();
+    var _that = this;
     this.props.form.validateFields((err, values)=>{
+      var isRemember = values.remember;
+      var passWord = values.passWord;
       if(!err){
         var fetchOption = {
-          mode: 'cors',
           method: "GET",
-          credentials: 'include'
         };
-        // fetch("http://172.16.50.225/api?action=login&userName="+values.userName+"&passWord="+values.passWord,fetchOption)
-        // .then(response=>{
-        //   if (response.status >= 200 && response.status < 300) {
-        //     return response.json();
-        //   } else {
-        //     var error = new Error(response.statusText);
-        //     error.response = response
-        //     return {"error":error}
-        //   }
-        // })
-        // .then(json=>{
-        //   if (json.error) {
-        //     console.log(json.error);
-        //   }
-        // });
-        setTimeout(()=>{
-          localStorage.userId = 0;
-          localStorage.userName = 'admin';
-          Router.push("/stage");
-        },1000);
+        fetch("http://172.16.50.225/api?action=login&userName="+values.userName+"&passWord="+values.passWord,fetchOption)
+        .then(response=>{
+          if (response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            var error = new Error(response.statusText);
+            error.response = response;
+            return {"error":error}
+          }
+        })
+        .then(json=>{
+          if (json.error) {
+            console.log(json.error);
+          } else {
+            // 账户名 账户id   coding
+            if (isRemember) {
+              _that.loginBackend(passWord);
+            } else {
+              _that.loginBackend();
+            }
+          }
+        }).catch(function(error) {
+          if (isRemember) {   // 临时
+            _that.loginBackend(passWord);
+          } else {
+            _that.loginBackend();
+          }
+          console.log('request failed', error);
+        });
       } else {
         console.log(err);
       }
@@ -124,7 +148,8 @@ class BackLogin extends Component {
             </div>
           </div>
         </Content>
-        <Footer style={{ backgroundColor: "#ffffff" }}>
+        <Footer style={{ backgroundColor: "#ffffff", textAlign: 'center', color: '#cccccc' }}>
+          React Backend ©2017 Created by Liangzelei
         </Footer>
       </Layout>
     )
