@@ -9,6 +9,14 @@ export default class BackHeader extends Component {
   constructor(props){
     super(props);
   };
+  // 退出操作，设置本地数据
+  handleLogout(){
+    var userObj = JSON.parse(localStorage.userInfo);
+    userObj.isLogin = false;
+    localStorage.userInfo = JSON.stringify(userObj);
+    console.log(localStorage.userInfo);
+  };
+
   // 点击下拉菜单回调
   handleMenuClick(e) {
     var _that = this;
@@ -30,13 +38,13 @@ export default class BackHeader extends Component {
         if (json.error) {
           console.log(json.error);
         } else { // 登出操作
-          localStorage.userInfo = "";
+          _that.handleLogout();
           _that.props.history.push('/login');
         }
       }).catch(function(error) {
         console.log('request failed', error);
         // 临时
-        localStorage.userInfo = "";
+        _that.handleLogout();
         _that.props.history.push('/login');
       });
     } else if ('change'==e.key) {

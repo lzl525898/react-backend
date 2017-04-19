@@ -13,18 +13,34 @@ const FormItem = Form.Item;
 class BackLogin extends Component {
   constructor(props){
     super(props);
+    this.state = {
+      defaultName: '',
+      defaultPwd:'',
+    };
+  };
+  componentWillMount(){
+    if ( localStorage.userInfo ) { //勾选过记住账户
+      if ( JSON.parse(localStorage.userInfo).userPassword ) {
+        this.setState({
+          defaultName: JSON.parse(localStorage.userInfo).userName,
+          defaultPwd: JSON.parse(localStorage.userInfo).userPassword,
+        });
+      }
+    } else {
+      console.log('未勾选记住密码');
+    }
   };
   // 登录成功跳转至后台
-  loginBackend(password=''){
+  loginBackend(userName,password=''){
     var userInfo = {
+      isLogin: true,
       userId: 0,
-      userName: 'admin',
+      userName: userName,
       userType: '管理员',
       userAvatar: './src/images/admin-avatar.png',
       userPassword:password,
     };
     localStorage.userInfo = JSON.stringify(userInfo);
-    console.log(JSON.stringify(userInfo));
     const { from } = this.props.location.state || { from: { pathname: '/stage' } }
     this.props.history.push(from.pathname);
   };
@@ -34,7 +50,8 @@ class BackLogin extends Component {
     var _that = this;
     this.props.form.validateFields((err, values)=>{
       var isRemember = values.remember;
-      var passWord = values.passWord;
+      var userPassWord = values.passWord;
+      var userName = values.userName;
       if(!err){
         var fetchOption = {
           method: "GET",
@@ -51,25 +68,25 @@ class BackLogin extends Component {
         })
         .then(json=>{
           if (json.error) {
-            console.log(json.error);
+            console.error(json.error);
           } else {
             // 账户名 账户id   coding
             if (isRemember) {
-              _that.loginBackend(passWord);
+              _that.loginBackend(userName,userPassWord);
             } else {
-              _that.loginBackend();
+              _that.loginBackend(userName);
             }
           }
         }).catch(function(error) {
-          if (isRemember) {   // 临时
-            _that.loginBackend(passWord);
+          if (isRemember) {// 临时
+            _that.loginBackend(userName,userPassWord);
           } else {
-            _that.loginBackend();
+            _that.loginBackend(userName);
           }
-          console.log('request failed', error);
+          console.error('request failed', error);
         });
       } else {
-        console.log(err);
+        console.error(err);
       }
     });
   };
@@ -115,16 +132,18 @@ class BackLogin extends Component {
               <Form onSubmit={ this.handleSubmit.bind(this)} style={{ maxWidth: 300, marginTop: 140 }}>
                 <FormItem>
                   {getFieldDecorator('userName', {
+                    initialValue: [ this.state.defaultName ],
                     rules: [{ required: true, message: '请输入你的账户！' }],
                   })(
-                    <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username" />
+                    <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username"/>
                   )}
                 </FormItem>
                 <FormItem>
                   {getFieldDecorator('passWord', {
+                    initialValue: [ this.state.defaultPwd ],
                     rules: [{ required: true, message: '请输入你的密码！' }],
                   })(
-                    <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="Password" />
+                    <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="Password"/>
                   )}
                 </FormItem>
                 <FormItem>

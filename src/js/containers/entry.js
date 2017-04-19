@@ -24,8 +24,12 @@ export default class Entry extends Component {
     super(props);
   };
   componentWillMount(){
-    if (localStorage.userInfo) {
-      history.push('/stage');
+    if ( localStorage.userInfo ) {
+      if ( JSON.parse(localStorage.userInfo).isLogin ) {
+        history.push('/stage');
+      } else {
+        history.push('/login');
+      }
     } else {
       history.push('/login');
     }
