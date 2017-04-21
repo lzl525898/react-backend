@@ -14,7 +14,7 @@ export default class BackHeader extends Component {
     var userObj = JSON.parse(localStorage.userInfo);
     userObj.isLogin = false;
     localStorage.userInfo = JSON.stringify(userObj);
-    console.log(localStorage.userInfo);
+    // console.log(localStorage.userInfo);
   };
 
   // 点击下拉菜单回调
@@ -73,7 +73,7 @@ export default class BackHeader extends Component {
               height: this.props.height }}>
               <div style={{ height: "100%", display: "flex", alignItem: "center" }}>
                 <img style={{
-                  width: 30, height: 30, marginTop: 10
+                  width: 30, height: 30, marginTop: 10, borderRadius: "50%"
                 }} src={ this.props.userAvatar }/>
               </div>
               <div style={{ height: "100%", display: "flex", alignItem: "center" }}>

@@ -6,7 +6,7 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom';
-import { Layout, Form, Icon, Input, Button, Checkbox} from 'antd';
+import { Layout, Form, Icon, Input, Button, Checkbox, Alert, notification } from 'antd';
 const { Header, Footer, Content } = Layout;
 const FormItem = Form.Item;
 
@@ -16,6 +16,10 @@ class BackLogin extends Component {
     this.state = {
       defaultName: '',
       defaultPwd:'',
+      forgetPassword: false,
+      showForgetPwdInfo: false,
+      forgetAlertType: '',
+      forgetAlertMsg: '',
     };
   };
   componentWillMount(){
@@ -44,8 +48,43 @@ class BackLogin extends Component {
     const { from } = this.props.location.state || { from: { pathname: '/stage' } }
     this.props.history.push(from.pathname);
   };
+  // 点击忘记密码
+  forgetPassword(){
+    this.setState({
+      forgetPassword: !this.state.forgetPassword
+    });
+  };
+  // 点击关闭忘记密码提示
+  onCloseForgetPwdInfo(event){
+    this.setState({ showForgetPwdInfo:false });
+  };
+  // 忘记密码表单
+  handleForgetPwdSubmit(event){
+    event.preventDefault();
+    var _that = this;
+    this.props.form.validateFields((err, values)=>{
+      var userPhone = values.userPhone;
+      var userName = values.account;
+      setTimeout(()=>{
+        // // 输入错误
+        // _that.setState({
+        //   showForgetPwdInfo:true,
+        //   forgetAlertType: 'warning',
+        //   forgetAlertMsg: '使用此手机用户不存在，不能使用取回密码功能'
+        // });
+        // 输入正确
+        notification.open({
+          message: '提示消息',
+          description: '取回密码的方法已经通过Email发送到您的信箱中，请在3天内修改您的密码',
+          icon: <Icon type="smile-circle" style={{ color: '#108ee9' }} />,
+          duration: 3,
+        });
+        _that.forgetPassword();
+      }, 300);
+    });
+  };
   // 提交登录表单
-  handleSubmit(event){
+  handleLoginSubmit(event){
     event.preventDefault();
     var _that = this;
     this.props.form.validateFields((err, values)=>{
@@ -118,6 +157,80 @@ class BackLogin extends Component {
         marginLeft:20,
       }
     };
+    const forgetPwdInfo = this.state.showForgetPwdInfo
+    ?
+      <Alert
+        message={ this.state.forgetAlertType }
+        type={ this.state.forgetAlertMsg }
+        closable="true"
+        onClose={ this.onCloseForgetPwdInfo.bind(this) }
+        style={{ minWidth: 200, maxWidth: 300, marginTop: 140, marginBottom: -120 }}
+      />
+    :
+      <div></div>
+    const rightContent = this.state.forgetPassword
+    ?
+      <Form onSubmit={ this.handleForgetPwdSubmit.bind(this)} style={{ maxWidth: 300, marginTop: 140 }}>
+        <FormItem>
+          {getFieldDecorator('userPhone', {
+            rules: [{ required: true, message: '请输入你的手机！' }],
+          })(
+            <Input prefix={<Icon type="phone" style={{ fontSize: 13 }} />} placeholder="Phone"/>
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('account', {
+            rules: [{ required: false, message: '请输入你的账户！' }],
+          })(
+            <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username"/>
+          )}
+        </FormItem>
+        <div>
+          <Button type="dashed" onClick={()=>{this.forgetPassword()}} style={{ width: "40%" }}>
+            返回
+          </Button>
+          <Button type="primary" htmlType="submit" style={{ width: "40%", float: 'right'}}>
+            提交
+          </Button>
+        </div>
+
+      </Form>
+    :
+      <Form onSubmit={ this.handleLoginSubmit.bind(this)} style={{ maxWidth: 300, marginTop: 140 }}>
+        <FormItem>
+          {getFieldDecorator('userName', {
+            initialValue: [ this.state.defaultName ],
+            rules: [{ required: true, message: '请输入你的账户！' }],
+          })(
+            <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username"/>
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('passWord', {
+            initialValue: [ this.state.defaultPwd ],
+            rules: [{ required: true, message: '请输入你的密码！' }],
+          })(
+            <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="Password"/>
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('remember', {
+            valuePropName: 'checked',
+            initialValue: true,
+          })(
+            <Checkbox>记住密码</Checkbox>
+          )}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="#" onClick={ this.forgetPassword.bind(this) }>忘记密码</a>
+          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            登录
+          </Button>
+        </FormItem>
+      </Form>;
     return(
       <Layout style={{ heigth: "100%", width: "100%" }}>
         <Header style={{ backgroundColor: "#ffffff" }}>
@@ -129,41 +242,8 @@ class BackLogin extends Component {
           <div style={{ border: "1px solid #cccccc", height: 220, marginTop: 120 }}></div>
           <div style={ styles.contentRightdiv }>
             <div style={ styles.rightDivContent }>
-              <Form onSubmit={ this.handleSubmit.bind(this)} style={{ maxWidth: 300, marginTop: 140 }}>
-                <FormItem>
-                  {getFieldDecorator('userName', {
-                    initialValue: [ this.state.defaultName ],
-                    rules: [{ required: true, message: '请输入你的账户！' }],
-                  })(
-                    <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username"/>
-                  )}
-                </FormItem>
-                <FormItem>
-                  {getFieldDecorator('passWord', {
-                    initialValue: [ this.state.defaultPwd ],
-                    rules: [{ required: true, message: '请输入你的密码！' }],
-                  })(
-                    <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="Password"/>
-                  )}
-                </FormItem>
-                <FormItem>
-                  {getFieldDecorator('remember', {
-                    valuePropName: 'checked',
-                    initialValue: true,
-                  })(
-                    <Checkbox>记住密码</Checkbox>
-                  )}
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="">忘记密码</a>
-                  <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-                    登录
-                  </Button>
-                </FormItem>
-              </Form>
+              { forgetPwdInfo }
+              { rightContent }
             </div>
           </div>
         </Content>

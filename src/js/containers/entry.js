@@ -12,7 +12,14 @@ import createHistory from 'history/createBrowserHistory';
 import BackStage from '../components/back-stage';
 import BackLogin from '../components/back-login';
 
-const history = createHistory();
+const history = createHistory({
+  initialEntries: [ '/' ]
+});
+
+const unlisten = history.listen((location, action) => {
+  // location is an object like window.location
+  console.log(action, location.pathname, location.state)
+});
 
 const defaultProps = {
     height : "100%",
@@ -38,7 +45,7 @@ export default class Entry extends Component {
     return(
       <Router history={ history }>
         <div style={{ height:this.props.height, backgroundColor:this.props.background }}>
-            <Route exact path="/" render={()=>(<div>React</div>)}/>
+            <Route path="/" render={()=>(<div></div>)}/>
             <Route path="/login" component={ BackLogin }/>
             <Route path="/stage" component={ BackStage }/>
         </div>

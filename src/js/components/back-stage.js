@@ -32,7 +32,7 @@ export default class BackStage extends Component {
         <Sider
           breakpoint="lg"
           collapsedWidth="0"
-          onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
+          onCollapse={(collapsed, type) => { /*console.log(collapsed, type);*/ }}
         >
           <BackAvatar userNick={ this.state.userName } userType={ this.state.userType } userAvatar={ this.state.userAvatar }/>
         </Sider>
