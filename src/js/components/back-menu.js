@@ -11,7 +11,7 @@ export default class BackMenu extends Component {
     super(props);
     this.state = {
       currentMenu: '用户管理',
-      currentitem: '添加用户',
+      currentItem: '添加用户',
       defaultSelectedKeys: ['addUser'],
       defaultOpenKeys: ['user']
     };
@@ -22,21 +22,22 @@ export default class BackMenu extends Component {
       selectedKey : this.state.defaultSelectedKeys[0],
       openKey : this.state.defaultOpenKeys[0],
       currentMenu : this.state.currentMenu,
-      currentitem : this.state.currentitem
+      currentItem : this.state.currentItem
     };
     this.props.handleCurrentMenuItem( menuInfo );
   };
 
   handleClick(e){
-    console.log(e);
     var menuInfo = {
       selectedKey : e.key,
-      openKey : e.keyPath[1]
+      openKey : e.keyPath[1],
+      currentMenu : e.item.props.datamenu,
+      currentItem : e.item.props.dataitem
     };
     this.props.handleCurrentMenuItem( menuInfo );
     this.setState({
-      currentMenu: e.props.datamenu,
-      currentitem: e.props.dataitem
+      currentMenu: e.item.props.datamenu,
+      currentItem: e.item.props.dataitem
     });
   };
 

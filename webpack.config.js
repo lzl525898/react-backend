@@ -4,7 +4,7 @@ const path = require('path');
 
 const config = {
   devServer: {
-    host: '172.16.50.225',
+    host: 'localhost',
     port: process.env.PORT || 8080
   },
   context: path.resolve(__dirname, 'src'),

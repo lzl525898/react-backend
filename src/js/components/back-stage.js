@@ -29,7 +29,7 @@ export default class BackStage extends Component {
       selectedKey: '',
       subMenuKey: '',
       currentMenu : '',
-      currentitem : ''
+      currentItem : ''
     };
   };
 
@@ -39,7 +39,7 @@ export default class BackStage extends Component {
       selectedKey: menuInfo.selectedKey,
       subMenuKey: menuInfo.openKey,
       currentMenu: menuInfo.currentMenu,
-      currentitem: menuInfo.currentitem
+      currentItem: menuInfo.currentItem
     });
   };
 
@@ -76,7 +76,7 @@ export default class BackStage extends Component {
             <Breadcrumb separator={<Icon type="caret-right"/>} style={{ margin: "10px 0"}}>
               <Breadcrumb.Item>后台管理</Breadcrumb.Item>
               <Breadcrumb.Item>{ this.state.currentMenu }</Breadcrumb.Item>
-              <Breadcrumb.Item>{ this.state.currentitem }</Breadcrumb.Item>
+              <Breadcrumb.Item>{ this.state.currentItem }</Breadcrumb.Item>
             </Breadcrumb>
             <div style={{
               padding:this.props.contentPadding, background:this.props.contentBackground,
