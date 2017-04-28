@@ -43,8 +43,6 @@ export default class BackStage extends Component {
     });
   };
 
-
-
   render(){
     const contents = ( submenu, selectKey ) => {
       if ('user'==submenu ) {
