@@ -1,10 +1,12 @@
 {
   "name": "react-backend",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "react-backend",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --watch --progress --colors --bail",
+    "start": "webpack-dev-server",
+    "test": "npm run start"
   },
   "repository": {
     "type": "git",
@@ -22,15 +24,18 @@
     "babel-preset-react": "^6.24.1",
     "babelify": "^7.3.0",
     "fetch": "^1.1.0",
+    "file-loader": "^0.11.1",
     "history": "^4.6.1",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
     "prop-types": "^15.5.7",
-    "react": "^15.5.3",
-    "react-dom": "^15.5.3",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-lz-editor": "^0.10.14",
     "react-responsive": "^1.2.7",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
+    "url-loader": "^0.5.8",
     "webpack": "^2.3.3",
     "webpack-dev-server": "^2.4.2"
   },

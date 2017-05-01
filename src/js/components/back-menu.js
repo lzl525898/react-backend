@@ -12,7 +12,7 @@ export default class BackMenu extends Component {
     this.state = {
       currentMenu: '用户管理',
       currentItem: '添加用户',
-      defaultSelectedKeys: ['addUser'],
+      defaultSelectedKeys: ['browse'],
       defaultOpenKeys: ['user']
     };
   };
@@ -56,7 +56,7 @@ export default class BackMenu extends Component {
           <Menu.Item key="4" datamenu="基础信息">Option 4</Menu.Item>
         </SubMenu>
         <SubMenu key="user" title={<span><Icon type="user" /><span>用户管理</span></span>}>
-          <Menu.Item key="5" datamenu="用户管理" dataitem="浏览用户">浏览用户</Menu.Item>
+          <Menu.Item key="browse" datamenu="用户管理" dataitem="浏览用户">浏览用户</Menu.Item>
           <Menu.Item key="6" datamenu="用户管理" dataitem="批量处理">批量处理</Menu.Item>
           <Menu.Item key="addUser" datamenu="用户管理" dataitem="添加用户">添加用户</Menu.Item>
           <Menu.Item key="8" datamenu="用户管理" dataitem="上传用户">上传用户</Menu.Item>
