@@ -16,6 +16,8 @@ import {
   Upload
 } from 'antd';
 
+import UserFilter from './back-user-filter';
+
 const Panel = Collapse.Panel;
 const FormItem = Form.Item;
 const { Option, OptGroup } = Select;
@@ -43,13 +45,33 @@ class BrowseUserCard extends Component{
     super(props);
     this.state = {
       userTotalNumbers: 102,
+      isOpenFilter: false,
     };
   };
   render(){
+    const userFilterContent = this.state.isOpenFilter
+      ?
+        <UserFilter/>
+      :
+        <div></div>;
     return(
       <div>
         <div style={{ fontSize: "24px", color: "#000000", fontWeight: "bold" }}>{ this.state.userTotalNumbers }&nbsp;用户</div>
-
+        <div style={{ lineHeight: "18px", marginTop: "10px"}}>
+          <a href="#" style={{ textDecoration: "none", fontSize: "18px" }}
+            onClick={()=>{
+              this.setState({
+                isOpenFilter:!this.state.isOpenFilter
+              });
+              this.setState({
+                addUserActiveKey: !this.state.isOpenFilter ? ['1','2','3','4'] : []
+              });
+            }}>
+            <Icon type={ this.state.isOpenFilter ? 'caret-down' : 'caret-right' } style={{ fontSize: "6px"}}/>
+            &nbsp;&nbsp;新过滤器
+          </a>
+        </div>
+        { userFilterContent }
       </div>
     );
   }
