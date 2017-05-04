@@ -11,7 +11,7 @@ const defaultProps = {
   headerPadding : 0,
   headerBackground : "#36A6E0",
   contentMinWidth : 640,
-  contentMinHeight : 360,
+  contentMinHeight : 320,
   contentBackground : '#fff',
   contentPadding : 24,
   siderBackground : "#ECECEC"

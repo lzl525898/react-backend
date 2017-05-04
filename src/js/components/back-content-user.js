@@ -17,6 +17,7 @@ import {
 } from 'antd';
 
 import UserFilter from './back-user-filter';
+import UserNewFilter from './back-user-newfilter';
 
 const Panel = Collapse.Panel;
 const FormItem = Form.Item;
@@ -40,24 +41,183 @@ export default class BackContentUser extends Component {
   }
 };
 
+var filterItems = {};
+var filterChecks = {};
 class BrowseUserCard extends Component{
   constructor(props){
     super(props);
     this.state = {
       userTotalNumbers: 102,
       isOpenFilter: false,
+      hasAddFilter: false, // 是否添加过滤器标题
+      isShowAddFilters: false, //是否显示添加的过滤器
     };
+    this.setDefaultFilterItems(filterItems);
+  };
+  // 判断是否可以添加过滤器
+  checkAddNewFilters(){
+    if ( filterItems.xing.content.length>0
+       ||filterItems.ming.content.length>0
+       ||filterItems.username.content.length>0
+       ||filterItems.allname.content.length>0 ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  // 改变是否显示 活动过滤器
+  changeAddFilterShowStatus(){
+    this.setState({
+      hasAddFilter : true,
+      isShowAddFilters : true
+    });
+  };
+  // 隐藏有关 新活动过滤器 的状态
+  hideAddFilterShow(){
+    this.setState({
+      hasAddFilter : false,
+      isShowAddFilters : false
+    });
+  };
+  // 获取过滤项对象
+  getFilterItem(){
+    return filterItems;
+  };
+  // 设置过滤项的信息
+  setFilterItem(filterItem, node=null, type=null , value=null){ // 1过滤源 2指定对象 3指定节点 4修改值
+    // console.log("node="+node+", type="+type+" , value="+value);
+    if ( 'xing'==node ) {
+      if ( 'content'==type ) {
+        filterItem.xing.content = value;
+      } else if ( 'select'==type ) {
+        filterItem.xing.select = value;
+      } else if ( 'checked'==type ) {
+        filterItem.xing.checked = value;
+      }
+    } else if ( 'ming'==node ) {
+      if ( 'content'==type ) {
+        filterItem.ming.content = value;
+      } else if ( 'select'==type ) {
+        filterItem.ming.select = value;
+      } else if ( 'checked'==type ) {
+        filterItem.ming.checked = value;
+      }
+    } else if ( 'username'==node ) {
+      if ( 'content'==type ) {
+        filterItem.username.content = value;
+      } else if ( 'select'==type ) {
+        filterItem.username.select = value;
+      } else if ( 'checked'==type ) {
+        filterItem.username.checked = value;
+      }
+    } else if ( 'allname'==node ) {
+      if ( 'content'==type ) {
+        filterItem.allname.content = value;
+      } else if ( 'select'==type ) {
+        filterItem.allname.select = value;
+      } else if ( 'checked'==type ) {
+        filterItem.allname.checked = value;
+      }
+    };
+    filterItems = filterItem;
+    return filterItems;
+  };
+  // 设置过滤项的信息
+  setFilterCheck(filteritem, node=null){ // 1过滤源 2指定对象 3指定节点 4修改值
+    if ( 'xing'==node ) {
+      filteritem.xing.checked = !filteritem.xing.checked;
+    } else if ( 'ming'==node ) {
+      filteritem.ming.checked = !filteritem.ming.checked;
+    } else if ( 'username'==node ) {
+      filteritem.username.checked = !filteritem.username.checked;
+    } else if ( 'allname'==node ) {
+      filteritem.allname.checked = !filteritem.allname.checked;
+    };
+    filterItems = filteritem;
+    return filterItems;
+  };
+  // 设置操作完后过滤项的值
+  setNewFilterItems(filterItem){
+    var filterItems = filterItem;
+    filterItems.xing.checked = false;
+    filterItems.ming.checked = false;
+    filterItems.username.checked = false;
+    filterItems.allname.checked = false;
+    return filterItems;
+  };
+  // 设置过滤项默认值
+  setDefaultFilterItems(filterItem){
+    filterItem = {
+      xing:{
+        title: '姓',
+        select: '包含',
+        checked: false,
+        content: ''
+      },
+      ming:{
+        title: '名',
+        select: '包含',
+        checked: false,
+        content: ''
+      },
+      username:{
+        title: '用户名',
+        select: '包含',
+        checked: false,
+        content: ''
+      },
+      allname:{
+        title: '用户全名',
+        select: '包含',
+        checked: false,
+        content: ''
+      }
+    }
+    filterItems = filterItem;
+    return filterItems;
   };
   render(){
     const userFilterContent = this.state.isOpenFilter
-      ?
-        <UserFilter/>
-      :
-        <div></div>;
+    ?
+      <UserFilter
+        getFilterItem={this.getFilterItem}
+        setFilterItemValue={this.setFilterItem.bind(filterItems)}
+        checkAddNewFilters={this.checkAddNewFilters}
+        setDefaultFilterItems={this.setDefaultFilterItems.bind(filterItems)}
+        changeAddFilterShowStatus={this.changeAddFilterShowStatus.bind(this)}/>
+    :
+      <div></div>;
+    const userAddFilteTitle = this.state.hasAddFilter
+    ?
+      <div>
+        <div style={{ lineHeight: "18px", marginTop: "5px"}}>
+          <a href="#" style={{ textDecoration: "none", fontSize: "18px" }}
+            onClick={()=>{
+              this.setState({
+                isShowAddFilters:!this.state.isShowAddFilters
+              });
+            }}>
+            <Icon type={ this.state.isShowAddFilters ? 'caret-down' : 'caret-right' } style={{ fontSize: "6px"}}/>
+            &nbsp;&nbsp;活动过滤器
+          </a>
+        </div>
+      </div>
+    :
+      <div></div>;
+    const userAddFilterChecks = this.state.isShowAddFilters
+    ?
+      <UserNewFilter
+        getFilterItem={this.getFilterItem}
+        setFilterItemValue={this.setFilterItem.bind(filterItems)}
+        setDefaultFilterItem={this.setDefaultFilterItems.bind(filterItems)}
+        hideAddFilterShow={this.hideAddFilterShow.bind(this)}
+      />
+    :
+      <div></div>;
     return(
       <div>
         <div style={{ fontSize: "24px", color: "#000000", fontWeight: "bold" }}>{ this.state.userTotalNumbers }&nbsp;用户</div>
-        <div style={{ lineHeight: "18px", marginTop: "10px"}}>
+        <div style={{ marginTop: "10px"}}>
           <a href="#" style={{ textDecoration: "none", fontSize: "18px" }}
             onClick={()=>{
               this.setState({
@@ -72,6 +232,9 @@ class BrowseUserCard extends Component{
           </a>
         </div>
         { userFilterContent }
+        <div style={{ borderBottom: "1px solid #cecece", marginTop: 5 }}></div>
+        { userAddFilteTitle }
+        { userAddFilterChecks }
       </div>
     );
   }
