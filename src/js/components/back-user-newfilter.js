@@ -25,7 +25,7 @@ export default class AddfilterItems extends Component {
   };
   onFilterChange(e){
     var targetCheck = e.target;
-    var filterItem = this.props.getFilterCheck();
+    var filterItem = this.props.getFilterItem();
     if ( 'xing'==targetCheck.dataId ) {
       this.props.setFilterItemValue(filterItem, 'xing', 'checked', !filterItem.xing.checked);
       // filterChecks.xing.checked = !filterChecks.xing.checked;
@@ -78,20 +78,69 @@ export default class AddfilterItems extends Component {
             <div style={{ marginTop : 10 }}>
               <Row>
                 <Col span={3}>
-                  <Button type="primary" style={{ width: "100%" }} disabled={true} onClick={()=>{
+                  <Button type="primary" style={{ width: "100%" }} disabled={false} onClick={()=>{
                     //将选中的check去掉
+                    var curShowCheckbox = new Array();
+                    if ( this.state.xingStatus ) {
+                      curShowCheckbox.push('xing');
+                    }
+                    if ( this.state.mingStatus ) {
+                      curShowCheckbox.push('ming');
+                    }
+                    if ( this.state.usernameStatus ) {
+                      curShowCheckbox.push('username');
+                    }
+                    if ( this.state.allnameStatus ) {
+                      curShowCheckbox.push('allname');
+                    }
+                    var contains = (arr, obj) => {
+                        var i = arr.length;
+                        while (i--) {
+                            if (arr[i] === obj) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    };
+                    const updateArray = this.props.deleteCheckBoxFilter(this.props.getFilterItem());
+                    if(updateArray.length>0){
+                      var filterItem = this.props.getFilterItem();
+                      var changeStatus = ()=>{
+                        var length = curShowCheckbox.length;
+                        var tmp = 0;
+                        for(var i=0;i<length;i++){
+                          if(contains(updateArray, curShowCheckbox[i])){
+                            tmp = tmp + 1;
+                          }
+                        }
+                        if(tmp==length){
+                          return true;
+                        }else{
+                          return false;
+                        }
+                      };
+                      if ( changeStatus() ){ // 全改变
+                          this.props.setDefaultFilterItem(filterItem);
+                          this.props.hideAddFilterShow();
+                      } else {
+                          this.props.changeAddFilterShowStatus();
+                      }
+                      this.props.updateUserTablesShow();
+                    }
                   }}>移除选择的过滤器</Button></Col>
                 <Col span={1}></Col>
                 <Col span={3}>
                   <Button type="primary" style={{ width: "100%" }} onClick={()=>{
                     this.props.setDefaultFilterItem(filterItem);
                     this.props.hideAddFilterShow();
+                    this.props.updateUserTablesShow();
                   }}>移除所有过滤器</Button></Col>
                 <Col span={17}></Col>
               </Row>
             </div>
           </Col>
         </Row>
+        <div style={{ borderBottom: "1px solid #cecece", marginTop: 5 }}></div>
       </div>
     )
   }

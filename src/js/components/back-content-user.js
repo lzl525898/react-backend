@@ -18,6 +18,7 @@ import {
 
 import UserFilter from './back-user-filter';
 import UserNewFilter from './back-user-newfilter';
+import UserTable from './back-user-table';
 
 const Panel = Collapse.Panel;
 const FormItem = Form.Item;
@@ -51,8 +52,17 @@ class BrowseUserCard extends Component{
       isOpenFilter: false,
       hasAddFilter: false, // 是否添加过滤器标题
       isShowAddFilters: false, //是否显示添加的过滤器
+      isShowUserTables: true // 是否显示用户table
     };
     this.setDefaultFilterItems(filterItems);
+  };
+  // 改变是否显示 用户列表
+  updateUserTablesShow(){
+    this.setState({ isShowUserTables:false});
+    var _that = this;
+    setTimeout(()=>{
+      _that.setState({ isShowUserTables:true});
+    },100);
   };
   // 判断是否可以添加过滤器
   checkAddNewFilters(){
@@ -67,10 +77,19 @@ class BrowseUserCard extends Component{
   };
   // 改变是否显示 活动过滤器
   changeAddFilterShowStatus(){
-    this.setState({
-      hasAddFilter : true,
-      isShowAddFilters : true
-    });
+    if ( this.state.hasAddFilter ) {//用于重复刷新
+      this.setState({
+        hasAddFilter : false,
+        isShowAddFilters : false
+      });
+    }
+    var _that = this;
+    setTimeout(()=>{
+      _that.setState({
+        hasAddFilter : true,
+        isShowAddFilters : true
+      });
+    },100);
   };
   // 隐藏有关 新活动过滤器 的状态
   hideAddFilterShow(){
@@ -78,6 +97,32 @@ class BrowseUserCard extends Component{
       hasAddFilter : false,
       isShowAddFilters : false
     });
+  };
+  // 删除已经checkbox的过滤器
+  deleteCheckBoxFilter(filterItem){
+    var updateValueArray = new Array();
+    if ( filterItem.xing.checked ) {
+      filterItem.xing.content = '';
+      filterItem.xing.checked = false;
+      updateValueArray.push('xing');
+    };
+    if ( filterItem.ming.checked ) {
+      filterItem.ming.content = '';
+      filterItem.ming.checked = false;
+      updateValueArray.push('ming');
+    };
+    if ( filterItem.allname.checked ) {
+      filterItem.allname.content = '';
+      filterItem.allname.checked = false;
+      updateValueArray.push('allname');
+    };
+    if ( filterItem.username.checked ) {
+      filterItem.username.content = '';
+      filterItem.username.checked = false;
+      updateValueArray.push('username');
+    };
+    filterItems = filterItem;
+    return updateValueArray;
   };
   // 获取过滤项对象
   getFilterItem(){
@@ -183,6 +228,7 @@ class BrowseUserCard extends Component{
         getFilterItem={this.getFilterItem}
         setFilterItemValue={this.setFilterItem.bind(filterItems)}
         checkAddNewFilters={this.checkAddNewFilters}
+        updateUserTablesShow={this.updateUserTablesShow.bind(this)}
         setDefaultFilterItems={this.setDefaultFilterItems.bind(filterItems)}
         changeAddFilterShowStatus={this.changeAddFilterShowStatus.bind(this)}/>
     :
@@ -209,11 +255,19 @@ class BrowseUserCard extends Component{
       <UserNewFilter
         getFilterItem={this.getFilterItem}
         setFilterItemValue={this.setFilterItem.bind(filterItems)}
+        deleteCheckBoxFilter={this.deleteCheckBoxFilter.bind(filterItems)}
         setDefaultFilterItem={this.setDefaultFilterItems.bind(filterItems)}
         hideAddFilterShow={this.hideAddFilterShow.bind(this)}
+        updateUserTablesShow={this.updateUserTablesShow.bind(this)}
+        changeAddFilterShowStatus={this.changeAddFilterShowStatus.bind(this)}
       />
     :
       <div></div>;
+    const userTables = this.state.isShowUserTables
+    ?
+      <UserTable userinfo='data'/>
+    :
+      <div></div>
     return(
       <div>
         <div style={{ fontSize: "24px", color: "#000000", fontWeight: "bold" }}>{ this.state.userTotalNumbers }&nbsp;用户</div>
@@ -235,6 +289,7 @@ class BrowseUserCard extends Component{
         <div style={{ borderBottom: "1px solid #cecece", marginTop: 5 }}></div>
         { userAddFilteTitle }
         { userAddFilterChecks }
+        { userTables }
       </div>
     );
   }
