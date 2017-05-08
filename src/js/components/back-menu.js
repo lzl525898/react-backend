@@ -10,13 +10,12 @@ export default class BackMenu extends Component {
   constructor(props){
     super(props);
     this.state = {
-      currentMenu: '用户管理',
-      currentItem: '添加用户',
-      defaultSelectedKeys: ['browse'],
-      defaultOpenKeys: ['user']
+      currentMenu: this.props.defaultMenu,
+      currentItem: this.props.defaultItem,
+      defaultSelectedKeys: [this.props.defaultSelectedKeys],
+      defaultOpenKeys: [this.props.defaultOpenKeys]
     };
   };
-
   componentWillMount(){
     var menuInfo = {
       selectedKey : this.state.defaultSelectedKeys[0],
@@ -27,6 +26,13 @@ export default class BackMenu extends Component {
     this.props.handleCurrentMenuItem( menuInfo );
   };
 
+  setSelectedKeys(keys){
+    var keysArr = new Array();
+    keysArr.push(keys);
+    this.setState({
+      currentSelectedKeys:keysArr
+    });
+  };
   handleClick(e){
     var menuInfo = {
       selectedKey : e.key,
@@ -34,18 +40,19 @@ export default class BackMenu extends Component {
       currentMenu : e.item.props.datamenu,
       currentItem : e.item.props.dataitem
     };
+    this.props.updatePropsValue( menuInfo.selectedKey );
     this.props.handleCurrentMenuItem( menuInfo );
     this.setState({
       currentMenu: e.item.props.datamenu,
       currentItem: e.item.props.dataitem
     });
   };
-
   render(){
     return(
       <Menu
         mode="inline"
         onClick={ this.handleClick.bind(this) }
+        selectedKeys={ [this.props.selectKeys] }
         defaultSelectedKeys={ this.state.defaultSelectedKeys }
         defaultOpenKeys={ this.state.defaultOpenKeys }
         style={{ width: "100%", backgroundColor: this.props.menuBackgroundColor }}>

@@ -29,7 +29,8 @@ export default class BackStage extends Component {
       selectedKey: '',
       subMenuKey: '',
       currentMenu : '',
-      currentItem : ''
+      currentItem : '',
+      repaintMenu : false // 跳转到添加用户页面
     };
   };
 
@@ -42,17 +43,49 @@ export default class BackStage extends Component {
       currentItem: menuInfo.currentItem
     });
   };
-
+  updatePropsValue(key){
+    this.setState({
+      selectedKey:key
+    });
+  };
+  repaintMenu(status){
+    this.setState({
+      repaintMenu:status
+    });
+  };
   render(){
+    const menuCom = this.state.repaintMenu
+    ?
+      <BackMenu
+        selectKeys = {this.state.selectedKey}
+        defaultMenu = '用户管理'
+        defaultItem = '添加用户'
+        defaultOpenKeys = 'user'
+        defaultSelectedKeys = 'addUser'
+        updatePropsValue={ this.updatePropsValue.bind(this) }
+        handleCurrentMenuItem={ this.handleMenuItem.bind(this) }
+      />
+    :
+      <BackMenu
+        selectKeys = {this.state.selectedKey}
+        defaultMenu = '用户管理'
+        defaultItem = '浏览用户'
+        defaultOpenKeys = 'user'
+        defaultSelectedKeys = 'browse'
+        updatePropsValue={ this.updatePropsValue.bind(this) }
+        handleCurrentMenuItem={ this.handleMenuItem.bind(this) }
+      />
     const contents = ( submenu, selectKey ) => {
+      // console.log('BackStage selectKey=>'+selectKey);
       if ('user'==submenu ) {
-        return <ContentUser currentSelectMenuItem={ selectKey } />
+        return <ContentUser
+                  currentSelectMenuItem={ selectKey }
+                  repaintMenu={ this.repaintMenu.bind(this) }
+                  setPropsValue={ this.updatePropsValue.bind(this) }
+                />
       }
       return <div>ERROR</div>;
     };
-    const breadcrumbs = () => {
-
-    }
     return(
       <Layout style={{ height:"100%" }}>
         <Sider
@@ -62,7 +95,7 @@ export default class BackStage extends Component {
           onCollapse={(collapsed, type) => { /*console.log(collapsed, type);*/ }}
         >
           <BackAvatar userNick={ this.state.userName } userType={ this.state.userType } userAvatar={ this.state.userAvatar }/>
-          <BackMenu handleCurrentMenuItem={ this.handleMenuItem.bind(this) }/>
+          { menuCom }
         </Sider>
         <Layout>
           <Header style={{ background:this.props.headerBackground,

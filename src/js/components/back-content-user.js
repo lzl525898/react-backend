@@ -25,19 +25,34 @@ const FormItem = Form.Item;
 const { Option, OptGroup } = Select;
 
 export default class BackContentUser extends Component {
+  constructor(props){
+    super(props);
+  };
+  // 改变当前点选的菜单项
+  changeCurrentSelectMenuItem(selectKey){
+    this.props.setPropsValue(selectKey);
+  };
+  // 重新绘制菜单至增加用户
+  repaintMenuWithAddUser(status){
+    this.props.repaintMenu(status);
+  };
   render(){
     const contents = ( selectKey )=>{
       if ( "addUser"==selectKey ) { // 点击添加用户
         return <WrappedAddUserCard/>
       } else if ( "browse"==selectKey ) { // 点击浏览用户
-        return <BrowseUserCard/>
+        return <BrowseUserCard
+                  repaintMenu={ this.repaintMenuWithAddUser.bind(this) }
+                  handleAddUser={ this.changeCurrentSelectMenuItem.bind(this) }
+               />
       } else {
         return <div>Content</div>
       }
     };
     return(
       <div>
-      { contents( this.props.currentSelectMenuItem ) }</div>
+        { contents( this.props.currentSelectMenuItem ) }
+      </div>
     )
   }
 };
@@ -55,6 +70,12 @@ class BrowseUserCard extends Component{
       isShowUserTables: true // 是否显示用户table
     };
     this.setDefaultFilterItems(filterItems);
+
+  };
+  // 点击添加用户按钮回调
+  onClickAddUserBtn(selectKey){
+    this.props.handleAddUser(selectKey);
+    this.props.repaintMenu(true);
   };
   // 改变是否显示 用户列表
   updateUserTablesShow(){
@@ -265,7 +286,7 @@ class BrowseUserCard extends Component{
       <div></div>;
     const userTables = this.state.isShowUserTables
     ?
-      <UserTable userinfo='data'/>
+      <UserTable userinfo='data' handleAddUser={this.onClickAddUserBtn.bind(this)}/>
     :
       <div></div>
     return(
