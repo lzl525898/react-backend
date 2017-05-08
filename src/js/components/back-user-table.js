@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 
-import { Table, Icon } from 'antd';
+import { Table, Icon, Button } from 'antd';
 
 const columns = [
   { title: '头像', dataIndex: '', key: 'avatar', render: (text, record, index)=> {
-    console.log('text');
-    console.log(text);
-    console.log('record');
-    console.log(record);
-    console.log('index=>'+index);
+    // console.log('text');
+    // console.log(text);
+    // console.log('record');
+    // console.log(record);
+    // console.log('index=>'+index);
     var userName = null;
     if ( 0==index) {
       userName = 'admin';
@@ -44,20 +44,35 @@ const data = [
   { key: 10, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
   { key: 11, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
   { key: 12, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 13, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 14, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 15, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
 ];
 
 export default class UserTables extends Component {
+  constructor(props){
+    super(props);
+  };
+  componentDidMount(){
+    // console.log(this.refs.table.state.pagination.current);
+  };
+  onClickAddUser(){
+    this.props.handleAddUser('addUser');
+  };
   render(){
     return(
-      <Table
-        bordered={true}
-        columns={columns}
-        expandedRowRender={record => <p>{record.description}</p>}
-        dataSource={data}
-      />
+      <div>
+        <div style={{marginTop:5,marginBottom:5}}>
+          <Button type="primary" onClick={ this.onClickAddUser.bind(this) }>添加用户</Button>
+        </div>
+        <Table
+          ref='table'
+          bordered={true}
+          columns={columns}
+          pagination={{
+            defaultPageSize: 10,
+          }}
+          expandedRowRender={record => <p>{record.description}</p>}
+          dataSource={data}
+        />
+      </div>
     )
   }
 }
