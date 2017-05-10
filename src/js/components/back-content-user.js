@@ -19,10 +19,13 @@ import {
 import UserFilter from './back-user-filter';
 import UserNewFilter from './back-user-newfilter';
 import UserTable from './back-user-table';
+import BatchHandleCard from './back-user-batch';
 
 const Panel = Collapse.Panel;
 const FormItem = Form.Item;
 const { Option, OptGroup } = Select;
+
+var filterItems = {};
 
 export default class BackContentUser extends Component {
   constructor(props){
@@ -36,6 +39,109 @@ export default class BackContentUser extends Component {
   repaintMenuWithAddUser(status){
     this.props.repaintMenu(status);
   };
+  // 设置过滤项对象
+  setFilterItem(filterItem=null){
+    filterItems = filterItem;
+  };
+  getFilterItem(){
+    return filterItems;
+  };
+  // 设置过滤项默认值
+  setDefaultFilterItems(filterItem){
+    filterItem = {
+      xing:{
+        title: '姓',
+        select: '包含',
+        checked: false,
+        content: ''
+      },
+      ming:{
+        title: '名',
+        select: '包含',
+        checked: false,
+        content: ''
+      },
+      username:{
+        title: '用户名',
+        select: '包含',
+        checked: false,
+        content: ''
+      },
+      allname:{
+        title: '用户全名',
+        select: '包含',
+        checked: false,
+        content: ''
+      }
+    }
+    filterItems = filterItem;
+    return filterItems;
+  };
+  // 设置过滤项的信息
+  setFilterItemValue(filterItem, node=null, type=null , value=null){ // 1过滤源 2指定对象 3指定节点 4修改值
+    // console.log("node="+node+", type="+type+" , value="+value);
+    if ( 'xing'==node ) {
+      if ( 'content'==type ) {
+        filterItem.xing.content = value;
+      } else if ( 'select'==type ) {
+        filterItem.xing.select = value;
+      } else if ( 'checked'==type ) {
+        filterItem.xing.checked = value;
+      }
+    } else if ( 'ming'==node ) {
+      if ( 'content'==type ) {
+        filterItem.ming.content = value;
+      } else if ( 'select'==type ) {
+        filterItem.ming.select = value;
+      } else if ( 'checked'==type ) {
+        filterItem.ming.checked = value;
+      }
+    } else if ( 'username'==node ) {
+      if ( 'content'==type ) {
+        filterItem.username.content = value;
+      } else if ( 'select'==type ) {
+        filterItem.username.select = value;
+      } else if ( 'checked'==type ) {
+        filterItem.username.checked = value;
+      }
+    } else if ( 'allname'==node ) {
+      if ( 'content'==type ) {
+        filterItem.allname.content = value;
+      } else if ( 'select'==type ) {
+        filterItem.allname.select = value;
+      } else if ( 'checked'==type ) {
+        filterItem.allname.checked = value;
+      }
+    };
+    filterItems = filterItem;
+    return filterItems;
+  };
+  // 删除已经checkbox的过滤器
+  deleteCheckBoxFilter(filterItem){
+    var updateValueArray = new Array();
+    if ( filterItem.xing.checked ) {
+      filterItem.xing.content = '';
+      filterItem.xing.checked = false;
+      updateValueArray.push('xing');
+    };
+    if ( filterItem.ming.checked ) {
+      filterItem.ming.content = '';
+      filterItem.ming.checked = false;
+      updateValueArray.push('ming');
+    };
+    if ( filterItem.allname.checked ) {
+      filterItem.allname.content = '';
+      filterItem.allname.checked = false;
+      updateValueArray.push('allname');
+    };
+    if ( filterItem.username.checked ) {
+      filterItem.username.content = '';
+      filterItem.username.checked = false;
+      updateValueArray.push('username');
+    };
+    filterItems = filterItem;
+    return updateValueArray;
+  };
   render(){
     const contents = ( selectKey )=>{
       if ( "addUser"==selectKey ) { // 点击添加用户
@@ -44,6 +150,15 @@ export default class BackContentUser extends Component {
         return <BrowseUserCard
                   repaintMenu={ this.repaintMenuWithAddUser.bind(this) }
                   handleAddUser={ this.changeCurrentSelectMenuItem.bind(this) }
+               />
+      } else if ( "batch"==selectKey ) { // 点击批量处理
+        return <BatchHandleCard
+                  filterItem = {filterItems}
+                  getFilterItem = {this.getFilterItem}
+                  setFilterItem = {this.setFilterItem}
+                  setFilterItemValue = {this.setFilterItemValue.bind(filterItems)}
+                  deleteCheckBoxFilter = {this.deleteCheckBoxFilter.bind(this)}
+                  setDefaultFilterItems = {this.setDefaultFilterItems.bind(filterItems)}
                />
       } else {
         return <div>Content</div>
@@ -57,8 +172,6 @@ export default class BackContentUser extends Component {
   }
 };
 
-var filterItems = {};
-var filterChecks = {};
 class BrowseUserCard extends Component{
   constructor(props){
     super(props);

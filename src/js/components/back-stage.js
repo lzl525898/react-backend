@@ -69,9 +69,9 @@ export default class BackStage extends Component {
       <BackMenu
         selectKeys = {this.state.selectedKey}
         defaultMenu = '用户管理'
-        defaultItem = '浏览用户'
+        defaultItem = '批量处理'
         defaultOpenKeys = 'user'
-        defaultSelectedKeys = 'browse'
+        defaultSelectedKeys = 'batch'
         updatePropsValue={ this.updatePropsValue.bind(this) }
         handleCurrentMenuItem={ this.handleMenuItem.bind(this) }
       />

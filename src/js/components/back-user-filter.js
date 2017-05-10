@@ -46,7 +46,11 @@ export default class UserFilter extends Component {
         // console.log(err);
       }
       this.props.changeAddFilterShowStatus();
-      this.props.updateUserTablesShow();
+      try {
+        this.props.updateUserTablesShow();
+      } catch (err) {
+        // console.log('未定义')
+      }
     }
   };
   // 过滤器项目有改变时调用

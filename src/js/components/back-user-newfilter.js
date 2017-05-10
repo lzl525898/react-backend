@@ -124,8 +124,12 @@ export default class AddfilterItems extends Component {
                           this.props.hideAddFilterShow();
                       } else {
                           this.props.changeAddFilterShowStatus();
-                      }
-                      this.props.updateUserTablesShow();
+                      };
+                      try{
+                        this.props.updateUserTablesShow();
+                      }catch(err){
+                        // console.log('未定义')
+                      };
                     }
                   }}>移除选择的过滤器</Button></Col>
                 <Col span={1}></Col>
@@ -133,7 +137,11 @@ export default class AddfilterItems extends Component {
                   <Button type="primary" style={{ width: "100%" }} onClick={()=>{
                     this.props.setDefaultFilterItem(filterItem);
                     this.props.hideAddFilterShow();
-                    this.props.updateUserTablesShow();
+                    try{
+                      this.props.updateUserTablesShow();
+                    }catch(err){
+                      // console.log('未定义')
+                    };
                   }}>移除所有过滤器</Button></Col>
                 <Col span={17}></Col>
               </Row>
