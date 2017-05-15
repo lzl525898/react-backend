@@ -5,8 +5,12 @@ class RichEditor extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        content: `
-                <pre><code>这个人很懒，还没有任何关于自己的描述~</code></pre>`
+        content:
+         this.props.defaultString
+         ?
+          this.props.defaultString
+         :
+          `<pre><code>这个人很懒，还没有任何关于自己的描述~</code></pre>`
       };
       this.receiveHtml = this.receiveHtml.bind(this);
     };

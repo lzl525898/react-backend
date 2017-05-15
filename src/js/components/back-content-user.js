@@ -13,13 +13,15 @@ import {
   Select,
   Checkbox,
   Card,
-  Upload
+  Upload,
+  message
 } from 'antd';
 
 import UserFilter from './back-user-filter';
 import UserNewFilter from './back-user-newfilter';
 import UserTable from './back-user-table';
 import BatchHandleCard from './back-user-batch';
+import UploadUserCard from './back-user-upload';
 
 const Panel = Collapse.Panel;
 const FormItem = Form.Item;
@@ -161,7 +163,7 @@ export default class BackContentUser extends Component {
                   setDefaultFilterItems = {this.setDefaultFilterItems.bind(filterItems)}
                />
       } else {
-        return <div>Content</div>
+        return <UploadUserCard/>
       }
     };
     return(
@@ -175,15 +177,29 @@ export default class BackContentUser extends Component {
 class BrowseUserCard extends Component{
   constructor(props){
     super(props);
+    var data = [
+      { key: 1, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 2, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 3, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 4, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 5, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 6, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 7, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 8, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 9, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 10, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 11, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+      { key: 12, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
+    ];
     this.state = {
-      userTotalNumbers: 102,
+      userTotalNumbers: data.length,
       isOpenFilter: false,
       hasAddFilter: false, // 是否添加过滤器标题
       isShowAddFilters: false, //是否显示添加的过滤器
-      isShowUserTables: true // 是否显示用户table
+      isShowUserTables: true, // 是否显示用户table
+      userTableInfo: data
     };
     this.setDefaultFilterItems(filterItems);
-
   };
   // 点击添加用户按钮回调
   onClickAddUserBtn(selectKey){
@@ -399,7 +415,7 @@ class BrowseUserCard extends Component{
       <div></div>;
     const userTables = this.state.isShowUserTables
     ?
-      <UserTable userinfo='data' handleAddUser={this.onClickAddUserBtn.bind(this)}/>
+      <UserTable userinfo={this.state.userTableInfo} handleAddUser={this.onClickAddUserBtn.bind(this)}/>
     :
       <div></div>
     return(
@@ -440,7 +456,13 @@ class AddUserCard extends Component {
   };
   // 提交添加用户回调
   handlSubmit(e){
-    console.log(e);
+    e.preventDefault();
+    message.success('添加用户成功');
+    // this.props.form.validateFields((err, fieldsValue) => {
+    //   if (!err) {
+    //     console.log('Received values of form: ', values);
+    //   }
+    // });
   };
   // 点击折叠面饭回调
   callback(key) {
@@ -448,16 +470,20 @@ class AddUserCard extends Component {
   };
   // 检查用户名格式是否正确
   handleCheckAccount(rule, value, callback) {
-        const { getFieldValue } = this.props.form
-        if ( value.length >= 6) {
-          if (value && value == getFieldValue('account')) {
-            // callback('输入的值:'+value)
+        const { getFieldValue } = this.props.form;
+        try{
+          if ( value.length >= 6) {
+            if (value && value == getFieldValue('account')) {
+              // callback('输入的值:'+value)
+            }
+          } else {
+            // callback('请至少输入6位字符...')
           }
-        } else {
-          // callback('请至少输入6位字符...')
+          // 必须总是返回一个 callback，否则 validateFieldsAndScroll 无法响应
+          callback();
+        } catch(error){
+            console.log('添加用户-error=>'+error);
         }
-        // 必须总是返回一个 callback，否则 validateFieldsAndScroll 无法响应
-        callback();
  };
  // 检查用户密码格式是否正确
  handleCheckPassword(rule, value, callback) {

@@ -6,7 +6,8 @@ import {
   Icon,
   Transfer,
   Button,
-  Select
+  Select,
+  message
 } from 'antd';
 
 const Option = Select.Option;
@@ -18,14 +19,15 @@ export default class BatcgUserlist extends Component {
       isShowUserList: true,
       mockData: [],
       targetKeys: [],
+      targetSelect: ''
     };
   };
   componentWillMount() {
-    this.getMock();
+    this.getMock(this.props.targetArray);
   }
-  getMock(){
-    const targetKeys = [];
-    const mockData = [];
+  getMock(target){
+    var targetKeys = [];
+    var mockData = [];
     for (let i = 0; i < 20; i++) {
       const data = {
         key: i.toString(),
@@ -33,10 +35,13 @@ export default class BatcgUserlist extends Component {
         description: `普通用户`,
         chosen: Math.random() * 2 > 1,
       };
-      if (data.chosen) {
-        targetKeys.push(data.key);
-      }
+      // if (data.chosen) {
+      //   targetKeys.push(data.key);
+      // }
       mockData.push(data);
+      if (target.length>0) {
+        targetKeys = target;
+      }
     }
     this.setState({
       mockData: mockData,
@@ -46,6 +51,7 @@ export default class BatcgUserlist extends Component {
   handleChange(targetKeys, direction, moveKeys){
     // console.log(targetKeys, direction, moveKeys);
     this.setState({ targetKeys: targetKeys});
+    this.props.setTargetArray(targetKeys);
   };
   renderItem(item){
     const customLabel = (
@@ -59,7 +65,7 @@ export default class BatcgUserlist extends Component {
     };
   };
   handleSelectChange(value){
-    console.log(value);
+    this.setState({targetSelect:value});
   };
   renderFooter(props){
     if ('所有用户'==props.titleText) {
@@ -83,7 +89,19 @@ export default class BatcgUserlist extends Component {
         </div>
       );
     }
-  }
+  };
+  handleClickBtn(){
+    var targetSelect = this.state.targetSelect;
+    if ('message'==targetSelect || 'password'==targetSelect || 'download'==targetSelect ) { // 发送消息
+      if ( this.state.targetKeys.length>0 ) { //证明有点选用户
+        this.props.changeShowBatch(targetSelect);
+      }else{
+        message.warning('您还没有选择任何要操作的用户！');
+      };
+    } else { // 没有选择任何操作
+      console.log('targetSelect=>'+targetSelect);
+    };
+  };
   render(){
     const userlist = this.state.isShowUserList
     ?
@@ -142,7 +160,7 @@ export default class BatcgUserlist extends Component {
                 <Option value="password">强制修改密码</Option>
                 <Option value="download">下载</Option>
               </Select>
-              <Button style={{marginLeft: 20}} type='primary'>继续</Button>
+              <Button style={{marginLeft: 20}} type='primary' onClick={this.handleClickBtn.bind(this)}>继续</Button>
               </div>
             </Col>
           </Row>

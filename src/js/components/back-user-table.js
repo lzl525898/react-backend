@@ -31,21 +31,6 @@ const columns = [
   { title: '操作', dataIndex: '', key: 'x', render: () => <a href="#">Delete</a> },
 ];
 
-const data = [
-  { key: 1, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 2, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 3, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 4, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 5, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 6, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 7, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 8, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 9, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 10, phone: '15046009860', type: '管理员', email: 'luckyforlei@163.com', accesslog: '2017-05-05 11:11', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 11, phone: '15521124651', type: '商户', email: 'liuyanming@163.com', accesslog: '2017-04-05 12:58', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-  { key: 12, phone: '15131222212', type: '物业', email: 'manguojing@163.com', accesslog: '2017-03-18 16:18', description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.' },
-];
-
 export default class UserTables extends Component {
   constructor(props){
     super(props);
@@ -70,7 +55,7 @@ export default class UserTables extends Component {
             defaultPageSize: 10,
           }}
           expandedRowRender={record => <p>{record.description}</p>}
-          dataSource={data}
+          dataSource={this.props.userinfo}
         />
       </div>
     )
